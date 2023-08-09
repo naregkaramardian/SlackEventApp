@@ -9,7 +9,8 @@ const blockMessage = ( channel, imageUrl, title, text, altText = "") => {
       Blocks.Image()
         .imageUrl(imageUrl)
         .altText(altText)
-        .title(title))
+        .title(title),
+      Blocks.Section({ text: text}))
     .buildToJSON();
 };
 

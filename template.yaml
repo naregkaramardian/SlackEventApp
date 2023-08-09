@@ -3,22 +3,49 @@ Transform: AWS::Serverless-2016-10-31
 Description: >-
   slack-event-app
  
+Parameters:
+  StageName:
+    Type: String
+    AllowedValues:
+      - dev
+      - test
+      - prod
+    Default: dev
+
 Resources:
-  SlackEventFunction:
+  SlackEventHandlerFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: slackEventHandler
-      Handler: src/app.lambdaHandler
+      FunctionName: slackEventHandlerFunction
+      Handler: src/handlers/eventHandler.lambdaHandler
+      AutoPublishAlias: !Ref StageName
       Runtime: nodejs16.x
       Architectures:
         - x86_64
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: slackBlockMessageFunction
       Environment:
         Variables:
-          SLACK_SIGNING_SECRET: d32ce55eb44347a23d07305fe2866f04
-          SLACK_BOT_TOKEN: xoxb-5685527174055-5710671636756-DUshZQIEqdQ17gE2rrf2i1XN
+          SLACK_SIGNING_SECRET: "Add Secret"
+          SLACK_BOT_TOKEN: "Add Secret"
       Events:
         SlackEventAPI:
           Type: Api
           Properties:
             Path: /rockets
             Method: post
+
+  SlackBlockMessageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: slackBlockMessageFunction
+      Handler: src/handlers/blockMessageHandler.lambdaHandler
+      AutoPublishAlias: !Ref StageName
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          SLACK_SIGNING_SECRET: "Add Secret"
+          SLACK_BOT_TOKEN: "Add Secret"
