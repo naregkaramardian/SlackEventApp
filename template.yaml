@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >-
+  slack-event-app
+ 
+Resources:
+  SlackEventFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: slackEventHandler
+      Handler: src/app.lambdaHandler
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          SLACK_SIGNING_SECRET: d32ce55eb44347a23d07305fe2866f04
+          SLACK_BOT_TOKEN: xoxb-5685527174055-5710671636756-DUshZQIEqdQ17gE2rrf2i1XN
+      Events:
+        SlackEventAPI:
+          Type: Api
+          Properties:
+            Path: /rockets
+            Method: post
